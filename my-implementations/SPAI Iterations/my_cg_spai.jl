@@ -1,7 +1,14 @@
-push!(LOAD_PATH, ".")
-using MySPAI: frob_inner_prod, frob_norm_squared
 using SparseArrays
 using LinearAlgebra
+
+function frob_inner_prod(A, B)
+    return sum(A .* B)
+end
+
+function frob_norm_squared(A)
+    return frob_inner_prod(A, A)
+end
+
 function my_cg(A, M, itmax, tol)
     #A  = original SPD matrix
     #M  = approximate inverse
@@ -9,7 +16,7 @@ function my_cg(A, M, itmax, tol)
     #P  = search direction
     #AP = A*P
 
-    n = A.n
+    n = size(A, 1)
 
     R = spzeros(n, n)
     P = spzeros(n, n)

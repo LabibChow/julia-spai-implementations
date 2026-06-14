@@ -1,6 +1,9 @@
 using SparseArrays
 using LinearAlgebra
-using MySPAI: frob_inner_prod, frob_norm
+
+frob_inner_prod(A, B) = sum(A .* B)
+frob_norm_squared(A) = sum(abs2, A)
+frob_norm(A) = sqrt(frob_norm_squared(A))
 
 function my_lomr(A, M, itmax, tol)
     n = size(A, 1)
