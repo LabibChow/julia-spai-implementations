@@ -3,10 +3,13 @@ using SparseArrays
 using LinearAlgebra
 using Plots
 
-include("../../Utils/check_spd.jl")
-include("../../Linear Solvers/my_cg_solve.jl")
-include("../../Linear Solvers/my_pcg_solve.jl")
-include("../../SPAI Iterations/my_cg_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "check_spd.jl"))
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_cg_solve.jl"))
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_pcg_solve.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_cg_spai.jl"))
 
 # 1. Load SuiteSparse matrix
 
@@ -17,15 +20,13 @@ n = size(A, 1)
 
 println("RUNNING VERSION WITH SPAI SPD CHECK")
 
-println("======================================")
+println("=====")
 println("Matrix: HB/nos1")
 println("Size: ", size(A))
 println("Nonzeros in A: ", nnz(A))
-println("======================================")
+println("=====")
 
 # 2. Create Ax = b problem
-# We choose x_exact = ones(n), so b = A*x_exact.
-# This way, we know the true solution.
 
 x_exact = ones(Float64, n)
 b = A * x_exact

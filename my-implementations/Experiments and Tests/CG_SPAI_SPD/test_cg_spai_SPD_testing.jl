@@ -3,8 +3,9 @@ using SparseArrays
 using LinearAlgebra
 using Plots
 
-include("../../Utils/check_spd.jl")
-include("../../SPAI Iterations/my_cg_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "check_spd.jl"))
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_cg_spai.jl"))
 
 
 # 1. Load HB/bcsstk21
@@ -16,12 +17,10 @@ A32 = sparse(Float32.(md.A))
 
 n = size(A64, 1)
 
-println("======================================")
-println("DAY 5: FLOAT64 VS FLOAT32 CG-SPAI")
+println("FLOAT64 VS FLOAT32 CG-SPAI")
 println("Matrix: HB/bcsstk21")
 println("Size: ", size(A64))
 println("Nonzeros in A: ", nnz(A64))
-println("======================================")
 
 # Check whether the original matrix A is SPD
 

@@ -2,9 +2,12 @@ using MatrixDepot
 using SparseArrays
 using LinearAlgebra
 
-include("../../Linear Solvers/my_cg_solve.jl")
-include("../../Linear Solvers/my_pcg_solve.jl")
-include("../../SPAI Iterations/my_cg_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_cg_solve.jl"))
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_pcg_solve.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_cg_spai.jl"))
 
 # 1. Load matrix in Float64 for high-precision checking
 

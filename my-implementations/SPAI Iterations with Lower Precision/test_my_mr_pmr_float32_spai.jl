@@ -1,7 +1,7 @@
 push!(LOAD_PATH, ".")
 
-include("my-implementations/my_mr_float32.jl")
-include("my-implementations/my_pmr_float32.jl")
+include(joinpath(@__DIR__, "my_mr_float32_spai.jl"))
+include(joinpath(@__DIR__, "my_pmr_float32_spai.jl"))
 
 using SparseArrays
 using LinearAlgebra

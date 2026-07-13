@@ -1,8 +1,8 @@
 using LinearAlgebra
 using SparseArrays
 
-function check_spd(A::AbstractMatrix; name = "A")
-
+function check_spd(A::AbstractMatrix; name = "A", symmetry_tolerance = 1e-12)
+    
     # 1. Relative symmetry error
     # For matrices, norm(A) gives the Frobenius norm.
 
@@ -37,7 +37,8 @@ function check_spd(A::AbstractMatrix; name = "A")
 
     # 4. Final SPD classification
 
-    symmetry_tolerance = 1e-12
+    # Float64-generated matrices can usually use 1e-12.
+    # Float32-generated matrices should use a looser tolerance, e.g. 1e-6
 
     is_spd =
         symmetry_error < symmetry_tolerance &&

@@ -1,9 +1,6 @@
 using SparseArrays
 using LinearAlgebra
 
-frob_inner_prod(A, B) = sum(A .* B)
-frob_norm_squared(A) = sum(abs2, A)
-frob_norm(A) = sqrt(frob_norm_squared(A))
 
 function my_lomr(A, M, itmax, tol)
     n = size(A, 1)
@@ -45,8 +42,7 @@ function my_lomr(A, M, itmax, tol)
         M .+= delta .* Z
         M .+= gamma .* P
 
-        R .-= delta .* AZ
-        R .-= gamma .* AP
+        R .= I - A * M
 
         P .*= gamma / delta
         P .+= Z

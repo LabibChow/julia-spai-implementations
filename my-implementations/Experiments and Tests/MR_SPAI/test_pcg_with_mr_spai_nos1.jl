@@ -1,23 +1,26 @@
-using MatrixDepot
+# using MatrixDepot
+using MatrixMarket
 using SparseArrays
 using LinearAlgebra
 using Plots
 
-include("../../Utils/check_spd.jl")
-include("../../Linear Solvers/my_cg_solve.jl")
-include("../../Linear Solvers/my_pcg_solve.jl")
-include("../../SPAI Iterations/my_mr_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "check_spd.jl"))
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_cg_solve.jl"))
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_pcg_solve.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_mr_spai.jl"))
 
 # PCG with valid MR-SPAI on HB/nos1
 
-md = mdopen("HB/nos1")
-
-A = sparse(Float64.(md.A))
+A = mmread("Matrices/tri100eigs4k.mtx")
+A = sparse(Float64.(A))
 n = size(A, 1)
 
 println("======================================")
-println("DAY 8: PCG WITH MR-SPAI")
-println("Matrix: HB/nos1")
+println("PCG WITH MR-SPAI")
+println("Matrix: tri100eigs4k")
 println("Size: ", size(A))
 println("Nonzeros in A: ", nnz(A))
 println("======================================")
@@ -26,10 +29,10 @@ println("======================================")
 
 println("\nChecking whether original matrix A is SPD...")
 
-spd_A = check_spd(A; name = "HB/nos1")
+spd_A = check_spd(A; name = "tri100eigs4k")
 
 if !spd_A.is_spd
-    error("HB/nos1 is not SPD, stopping experiment.")
+    error("tri100eigs4k is not SPD, stopping experiment.")
 end
 
 # 2. Build MR-SPAI
@@ -123,7 +126,7 @@ p = plot(
     yscale = :log10,
     xlabel = "Solver iteration",
     ylabel = "Relative residual",
-    title = "CG vs PCG with MR-SPAI for HB/nos1",
+    title = "CG vs PCG with MR-SPAI for tri100eigs4k",
     label = "CG",
     linewidth = 3
 )
@@ -146,9 +149,9 @@ plot!(
     linewidth = 3
 )
 
-savefig(p, "nos1_cg_vs_pcg_mr_spai.png")
+savefig(p, "tri100eigs4k_cg_vs_pcg_mr_spai.png")
 
-println("\nSaved plot: nos1_cg_vs_pcg_mr_spai.png")
+println("\nSaved plot: tri100eigs4k_cg_vs_pcg_mr_spai.png")
 
 # 9. Summary
 

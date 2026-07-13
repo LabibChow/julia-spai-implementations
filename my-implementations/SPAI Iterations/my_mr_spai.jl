@@ -1,9 +1,6 @@
 using SparseArrays
 using LinearAlgebra
 
-frob_inner_prod(A, B) = sum(A .* B)
-frob_norm_squared(A) = sum(abs2, A)
-frob_norm(A) = sqrt(frob_norm_squared(A))
 
 function my_mr(A, M, itmax, tol)
     n = size(A, 1)
@@ -22,8 +19,8 @@ function my_mr(A, M, itmax, tol)
         alpha = frob_inner_prod(R, AR) / frob_norm_squared(AR)
 
         M .+= alpha .* R
-        R .-= alpha .* AR
-        AR .= A * R
+        R .= I - A * M
+        AR .= A * R 
 
         i += 1
         R_norm[i + 1] = frob_norm(R)

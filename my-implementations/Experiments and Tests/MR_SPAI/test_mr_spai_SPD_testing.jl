@@ -1,21 +1,22 @@
-using MatrixDepot
+using MatrixMarket
 using SparseArrays
 using LinearAlgebra
 using Plots
 
-include("../../Utils/check_spd.jl")
-include("../../SPAI Iterations/my_mr_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "check_spd.jl"))
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_mr_spai.jl"))
 
 # MR-SPAI test on HB/nos1
 
-md = mdopen("HB/nos1")
-
-A = sparse(Float64.(md.A))
+A = mmread("Matrices/tri100eigs4k.mtx")
+A = sparse(Float64.(A))
 n = size(A, 1)
 
 println("=====")
 println("MR-SPAI TEST")
-println("Matrix: HB/nos1")
+println("Matrix: tri100eigs4k")
 println("Size: ", size(A))
 println("Nonzeros in A: ", nnz(A))
 println("=====")
@@ -24,13 +25,13 @@ println("=====")
 
 println("\nChecking whether original matrix A is SPD...")
 
-spd_A = check_spd(A; name = "HB/nos1")
+spd_A = check_spd(A; name = "tri100eigs4k")
 
 if !spd_A.is_spd
-    error("HB/nos1 is not SPD, stopping experiment.")
+    error("tri100eigs4k is not SPD, stopping experiment.")
 end
 
-println("HB/nos1 passed the SPD check.")
+println("tri100eigs4k passed the SPD check.")
 
 # 2. Build MR-SPAI
 
@@ -70,12 +71,12 @@ plot(
     yscale = :log10,
     xlabel = "SPAI iteration",
     ylabel = "MR-SPAI residual",
-    title = "MR-SPAI convergence for HB/nos1",
+    title = "MR-SPAI convergence for tri100eigs4k",
     label = "MR Float64",
     linewidth = 3
 )
 
-savefig("nos1_mr_spai_convergence.png")
+savefig("tri100eigs4k_mr_spai_convergence.png")
 
 # 6. Summary
 
@@ -83,7 +84,7 @@ println("\n=====")
 println("SUMMARY")
 println("=====")
 
-println("Matrix: HB/nos1")
+println("Matrix: tri100eigs4k")
 println("Method: MR-SPAI")
 println("SPAI iterations: ", length(res_mr) - 1)
 println("SPAI quality ||I - A*M||_F / ||I||_F: ", spai_quality)
@@ -93,4 +94,4 @@ println("Largest eigenvalue: ", spd_mr.lambda_max)
 println("Cholesky succeeded: ", spd_mr.cholesky_success)
 println("SPD: ", spd_mr.is_spd)
 println("Nonzeros in M: ", nnz(M_mr))
-println("Saved plot: nos1_mr_spai_convergence.png")
+println("Saved plot: tri100eigs4k_mr_spai_convergence.png")

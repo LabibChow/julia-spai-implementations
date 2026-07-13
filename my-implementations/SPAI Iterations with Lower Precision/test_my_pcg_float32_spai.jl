@@ -1,6 +1,6 @@
 push!(LOAD_PATH, ".")
 
-include("my-implementations/my_pcg_float32.jl")
+include(joinpath(@__DIR__, "my_pcg_float32_spai.jl"))
 
 using SparseArrays
 using LinearAlgebra

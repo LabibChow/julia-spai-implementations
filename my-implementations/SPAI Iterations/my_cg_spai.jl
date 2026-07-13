@@ -1,14 +1,6 @@
 using SparseArrays
 using LinearAlgebra
 
-function frob_inner_prod(A, B)
-    return sum(A .* B)
-end
-
-function frob_norm_squared(A)
-    return frob_inner_prod(A, A)
-end
-
 function my_cg(A, M, itmax, tol)
     #A  = original SPD matrix
     #M  = approximate inverse
@@ -39,7 +31,7 @@ function my_cg(A, M, itmax, tol)
         alpha = R_frob_norm_squared / P_AP_frob
 
         M .+= alpha .* P
-        R .-= alpha .* AP
+        R .= I - A * M
 
         old_R_frob_norm_squared = R_frob_norm_squared
         R_frob_norm_squared = frob_norm_squared(R)

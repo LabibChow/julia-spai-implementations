@@ -1,7 +1,7 @@
 push!(LOAD_PATH, ".")
 
-include("my-implementations/my_lomr_float32.jl")
-include("my-implementations/my_lopmr_float32.jl")
+include(joinpath(@__DIR__, "my_lomr_float32_spai.jl"))
+include(joinpath(@__DIR__, "my_lopmr_float32_spai.jl"))
 
 using SparseArrays
 using LinearAlgebra

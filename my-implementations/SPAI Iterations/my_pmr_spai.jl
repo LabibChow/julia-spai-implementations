@@ -1,6 +1,6 @@
 using SparseArrays
 using LinearAlgebra
-using MySPAI: frob_inner_prod, frob_norm, frob_norm_squared
+
 
 function my_pmr(A, Pr, M, itmax, tol)
     n = size(A, 1)

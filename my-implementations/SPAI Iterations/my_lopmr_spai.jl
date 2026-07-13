@@ -1,6 +1,6 @@
 using SparseArrays
 using LinearAlgebra
-using MySPAI: frob_inner_prod, frob_norm
+
 
 function my_lopmr(A, Pr, M, itmax, tol)
     n = size(A, 1)
@@ -46,8 +46,7 @@ function my_lopmr(A, Pr, M, itmax, tol)
         M .+= delta .* Z
         M .+= gamma .* P
 
-        R .-= delta .* AZ
-        R .-= gamma .* AP
+        R .= I - A * M
 
         P .*= gamma / delta
         P .+= Z

@@ -3,13 +3,15 @@ using SparseArrays
 using LinearAlgebra
 using Plots
 
-include("../../Utils/check_spd.jl")
-include("../../Linear Solvers/my_cg_solve.jl")
-include("../../Linear Solvers/my_pcg_solve.jl")
+include(joinpath(@__DIR__, "..", "..", "Utils", "check_spd.jl"))
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
 
-include("../../SPAI Iterations/my_cg_spai.jl")
-include("../../SPAI Iterations/my_mr_spai.jl")
-include("../../SPAI Iterations/my_lomr_spai.jl")
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_cg_solve.jl"))
+include(joinpath(@__DIR__, "..", "..", "Linear Solvers", "my_pcg_solve.jl"))
+
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_cg_spai.jl"))
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_mr_spai.jl"))
+include(joinpath(@__DIR__, "..", "..", "SPAI Iterations", "my_lomr_spai.jl"))
 
 # Final comparison on HB/nos1
 # CG-SPAI vs MR-SPAI vs LOMR-SPAI

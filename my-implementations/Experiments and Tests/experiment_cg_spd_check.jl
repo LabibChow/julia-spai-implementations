@@ -3,10 +3,8 @@ using SparseArrays
 using LinearAlgebra
 
 # This experiment checks whether the selected matrix is symmetric positive definite (SPD).
-include("../Linear Solvers/my_cg_solve.jl")
-include("../Utils/check_spd.jl")
-
-# 1. Load the SuiteSparse matrix HB/nos1
+include(joinpath(@__DIR__, "..", "Linear Solvers", "my_cg_solve.jl"))
+include(joinpath(@__DIR__, "..", "Utils", "check_spd.jl"))
 
 md = mdopen("HB/nos1")
 A = sparse(Float64.(md.A))
@@ -33,7 +31,6 @@ println("\nChecking whether HB/nos1 is SPD...")
 spd_result_A = check_spd(A; name = "HB/nos1")
 
 # 3. Stop if A is not SPD
-# CG theoretically requires A to be symmetric positive definite.
 
 if !spd_result_A.is_spd
     println("\nHB/nos1 did not pass the SPD checks.")
@@ -47,8 +44,6 @@ println("Proceeding with the CG experiment...")
 
 
 # 4. Create the test problem Ax = b
-# We choose x_exact = ones(n).
-# Therefore, b = A*x_exact and we know the true solution.
 
 x_exact = ones(Float64, n)
 b = A * x_exact
@@ -86,9 +81,6 @@ cg_rel_err =
 
 cg_converged =
     cg_rel_res < tol
-
-
-# 7. Print Day 1 results
 
 println("\nMatrix information")
 println("Matrix: HB/nos1")

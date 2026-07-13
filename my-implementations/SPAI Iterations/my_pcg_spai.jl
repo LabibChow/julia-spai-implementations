@@ -1,6 +1,6 @@
 using SparseArrays
 using LinearAlgebra
-using MySPAI: frob_inner_prod, frob_norm
+
 
 function my_pcg(A, Pr, M, itmax, tol)
     n = size(A, 1)
@@ -29,7 +29,7 @@ function my_pcg(A, Pr, M, itmax, tol)
         alpha = R_Z_frob / P_AP_frob
 
         M .+= alpha .* P
-        R .-= alpha .* AP
+        R .= I - A * M
 
         Z .= Pr * R
 
