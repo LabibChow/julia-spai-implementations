@@ -1,7 +1,6 @@
 using SparseArrays
 using LinearAlgebra
 
-
 function my_cg_float32(A, M, itmax, tol)
     A32 = Float32.(A)
     M32 = Float32.(M)

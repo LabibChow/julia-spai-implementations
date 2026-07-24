@@ -1,7 +1,8 @@
 using SparseArrays
 using LinearAlgebra
 
-function my_pcg_float32(A, Pr, M, itmax, tol)
+
+function my_pcg_float32(A, Pr, M, itmax, tol; max_per_column::Union{Nothing, Int} = nothing,)
     A64 = Float64.(A)
 
     A32 = Float32.(A)
@@ -19,6 +20,7 @@ function my_pcg_float32(A, Pr, M, itmax, tol)
 
     R_norm = zeros(Float64, itmax + 1)
 
+    # Actual residual in Float64.
     R64 .= I - A64 * Float64.(M32)
 
     R32 .= Float32.(R64)
@@ -35,10 +37,26 @@ function my_pcg_float32(A, Pr, M, itmax, tol)
     while i < itmax
         P_AP_frob = frob_inner_prod(P, AP)
 
+        if P_AP_frob == 0
+            @warn "PCG stopped because the alpha denominator is zero."
+            break
+        end
+
         alpha = Float32(R_Z_frob / P_AP_frob)
 
+        # Update the approximate inverse.
         M32 .+= alpha .* P
 
+        # Restrict the sparsity immediately after the update.
+        if max_per_column !== nothing
+            M32 = drop_largest_per_column(
+                M32,
+                max_per_column;
+                keep_diagonal = true,
+            )
+        end
+
+        # Recompute the actual residual after dropping.
         R64 .= I - A64 * Float64.(M32)
 
         R32 .= Float32.(R64)
@@ -57,6 +75,11 @@ function my_pcg_float32(A, Pr, M, itmax, tol)
         )
 
         if R_norm[i + 1] < tol
+            break
+        end
+
+        if old_R_Z_frob == 0
+            @warn "PCG stopped because the beta denominator is zero."
             break
         end
 

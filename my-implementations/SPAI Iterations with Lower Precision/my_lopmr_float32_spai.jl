@@ -2,7 +2,7 @@ using SparseArrays
 using LinearAlgebra
 
 
-function my_lopmr_float32(A, Pr, M, itmax, tol)
+function my_lopmr_float32(A, Pr, M, itmax, tol; max_per_column::Union{Nothing, Int} = nothing,)
     A64 = Float64.(A)
 
     A32 = Float32.(A)
@@ -23,6 +23,7 @@ function my_lopmr_float32(A, Pr, M, itmax, tol)
 
     R_norm = zeros(Float64, itmax + 1)
 
+    # Actual residual in Float64.
     R64 .= I - A64 * Float64.(M32)
 
     R32 .= Float32.(R64)
@@ -39,9 +40,15 @@ function my_lopmr_float32(A, Pr, M, itmax, tol)
         PrAP .= Pr32 * AP
 
         if i == 0
+            denominator = frob_inner_prod(AZ, PrAZ)
+
+            if denominator == 0
+                @warn "LOPMR stopped because the delta denominator is zero."
+                break
+            end
+
             delta = Float32(
-                frob_inner_prod(Z, AZ) /
-                frob_inner_prod(AZ, PrAZ)
+                frob_inner_prod(Z, AZ) / denominator
             )
 
             gamma = Float32(1.0)
@@ -54,6 +61,11 @@ function my_lopmr_float32(A, Pr, M, itmax, tol)
 
             c = AZ_PrAZ * AP_PrAP - AZ_PrAP^2
 
+            if c == 0
+                @warn "LOPMR stopped because the 2×2 system is singular."
+                break
+            end
+
             delta = Float32(
                 (AP_PrAP * Z_AZ - AZ_PrAP * Z_AP) / c
             )
@@ -63,9 +75,25 @@ function my_lopmr_float32(A, Pr, M, itmax, tol)
             )
         end
 
+        if delta == 0
+            @warn "LOPMR stopped because delta is zero."
+            break
+        end
+
+        # Update the approximate inverse.
         M32 .+= delta .* Z
         M32 .+= gamma .* P
 
+        # Restrict the sparsity immediately after both updates.
+        if max_per_column !== nothing
+            M32 = drop_largest_per_column(
+                M32,
+                max_per_column;
+                keep_diagonal = true,
+            )
+        end
+
+        # Recompute the actual residual after dropping.
         R64 .= I - A64 * Float64.(M32)
 
         R32 .= Float32.(R64)
