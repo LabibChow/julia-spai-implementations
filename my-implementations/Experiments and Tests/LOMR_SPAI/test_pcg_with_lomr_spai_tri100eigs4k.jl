@@ -33,8 +33,7 @@ function read_mtx_coordinate(filename)
             push!(cols, j)
             push!(vals, v)
 
-            # If the MatrixMarket file stores only one triangle,
-            # add the mirrored entry manually.
+            
             if is_symmetric && i != j
                 push!(rows, j)
                 push!(cols, i)
