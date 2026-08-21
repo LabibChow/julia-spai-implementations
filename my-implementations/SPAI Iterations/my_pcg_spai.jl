@@ -2,7 +2,14 @@ using SparseArrays
 using LinearAlgebra
 
 
-function my_pcg(A, Pr, M, itmax, tol)
+function my_pcg(
+    A,
+    Pr,
+    M,
+    itmax,
+    tol;
+    max_per_column::Union{Nothing, Int} = nothing
+)
     n = size(A, 1)
 
     R = spzeros(n, n)
@@ -12,7 +19,10 @@ function my_pcg(A, Pr, M, itmax, tol)
 
     R_norm = zeros(itmax + 1)
 
+    # Initial residual
     R .= I - A * M
+
+    # Preconditioned residual
     Z .= Pr * R
 
     R_Z_frob = frob_inner_prod(R, Z)
@@ -23,34 +33,68 @@ function my_pcg(A, Pr, M, itmax, tol)
     i = 0
     R_norm[i + 1] = frob_norm(R)
 
+    println("my_pcg it = 0, ", "err = $(R_norm[1]), ", "nnz(M)/n^2 = $(nnz(M) / n^2)")
+
     while i < itmax
-        P_AP_frob = frob_inner_prod(P, AP)
 
-        alpha = R_Z_frob / P_AP_frob
+    # alpha computation
 
-        M .+= alpha .* P
-        R .= I - A * M
+    P_AP_frob = frob_inner_prod(P, AP)
 
-        Z .= Pr * R
+    alpha = R_Z_frob / P_AP_frob
 
-        old_R_Z_frob = R_Z_frob
-        R_Z_frob = frob_inner_prod(R, Z)
+    # Update SPAI
 
-        i += 1
-        R_norm[i + 1] = frob_norm(R)
+    M = M + alpha .* P
 
-        println("my_pcg it = $i, err = $(R_norm[i + 1]), nnz(M)/n^2 = $(nnz(M)/n^2)")
 
-        if R_norm[i + 1] < tol
-            break
-        end
+    # Optional symmetric dropping
+    # Droppedd BEFORE recomputing the true residual.
 
-        beta = R_Z_frob / old_R_Z_frob
+    # Once entries of M are dropped,
+    #     R_new = R_old - alpha * AP       
+    # is no longer the exact residual corresponding to the dropped M.
 
-        P .*= beta
-        P .+= Z
+    if max_per_column !== nothing
+    M = drop_largest_per_column(M, max_per_column; keep_diagonal = true)
+    end
 
-        AP .= A * P
+    # Recomputed true residual using the dropped M
+
+    R = I - A * M
+
+
+    # Preconditioned residual
+
+    Z = Pr * R
+
+    old_R_Z_frob = R_Z_frob
+
+    R_Z_frob = frob_inner_prod(R, Z)
+
+
+    # Residual norm
+
+    i += 1
+
+    R_norm[i + 1] = frob_norm(R)
+
+    println("my_pcg it = $i, ", "err = $(R_norm[i + 1]), ", "nnz(M)/n^2 = $(nnz(M) / n^2)")
+
+    if R_norm[i + 1] < tol
+    break
+    end
+
+
+    # Compute beta
+
+    beta = R_Z_frob / old_R_Z_frob
+
+    # Search direction
+
+    P = Z + beta .* P
+
+    AP = A * P
     end
 
     return M, R_norm[1:i+1]
