@@ -1,0 +1,19 @@
+tri100eigs4k — no-dropping spectra
+Float64 vs Float32/Float16 + Float64 fixed-pattern refinement
+itmax = 300
+tol = 1.0e-15
+dropping = none
+
+Method   Precision                     Pos      Neg     Zero       lambda_min       lambda_max
+PMR      Float64                      3580      420        0    -3.039651e-01     1.191253e+02
+LOPMR    Float64                      4000        0        0     2.808153e-01     1.079736e+08
+PCG      Float64                      4000        0        0     2.808153e-01     1.079736e+08
+PMR      F32 + refinement             3994        6        0    -5.261243e+02     1.142338e+04
+LOPMR    F32 + refinement             4000        0        0     2.808153e-01     1.079736e+08
+PCG      F32 + refinement             4000        0        0     2.808153e-01     1.079736e+08
+PMR      F16 + refinement             3999        1        0    -2.154676e+02     3.673364e+02
+LOPMR    F16 + refinement             3998        2        0    -3.953863e+06     8.873699e+07
+PCG      F16 + refinement             3999        1        0    -8.981518e+02     1.079392e+08
+
+A^-1 minimum eigenvalue: 2.8081526486456709e-01
+A^-1 maximum eigenvalue: 1.0797358851261005e+08

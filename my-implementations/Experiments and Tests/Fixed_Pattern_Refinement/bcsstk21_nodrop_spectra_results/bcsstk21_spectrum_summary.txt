@@ -1,0 +1,16 @@
+bcsstk21 — no-dropping spectra
+Float64 vs Float32 + Float64 fixed-pattern refinement
+itmax = 1000
+tol = 1.0e-15
+dropping = none
+
+Method   Precision                     Pos      Neg     Zero       lambda_min       lambda_max
+PMR      Float64                      3578       22        0    -1.138583e-02     9.185674e-01
+LOPMR    Float64                      3600        0        0     7.854594e-09     1.386165e-01
+PCG      Float64                      3600        0        0     7.854594e-09     1.386165e-01
+PMR      F32 + refinement             3600        0        0     7.854594e-09     1.386165e-01
+LOPMR    F32 + refinement             3600        0        0     7.854594e-09     1.386165e-01
+PCG      F32 + refinement             3600        0        0     7.854594e-09     1.386165e-01
+
+A^-1 minimum eigenvalue: 7.8545942157934616e-09
+A^-1 maximum eigenvalue: 1.3861652431638632e-01

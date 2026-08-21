@@ -1,0 +1,16 @@
+msc04515 — no-dropping spectra
+Float64 vs Float32 + Float64 fixed-pattern refinement
+itmax = 5000
+tol = 1.0e-15
+dropping = none
+
+Method   Precision                     Pos      Neg     Zero       lambda_min       lambda_max
+PMR      Float64                      4414      101        0    -8.602749e-02     1.016697e+00
+LOPMR    Float64                      4515        0        0     3.175372e-11     7.216896e-05
+PCG      Float64                      4515        0        0     3.175372e-11     7.216896e-05
+PMR      F32 + refinement             4515        0        0     3.175372e-11     7.216896e-05
+LOPMR    F32 + refinement             4515        0        0     3.175372e-11     7.216896e-05
+PCG      F32 + refinement             4515        0        0     3.175372e-11     7.216896e-05
+
+A^-1 minimum eigenvalue: 3.1753720069377811e-11
+A^-1 maximum eigenvalue: 7.2168962919625144e-05
