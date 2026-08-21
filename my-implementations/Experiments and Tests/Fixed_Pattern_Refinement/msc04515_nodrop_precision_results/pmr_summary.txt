@@ -1,0 +1,31 @@
+msc04515 — PMR — no dropping
+
+Float64 iterations: 5000
+Float32 iterations: 5000
+Float16 iterations: 0
+
+Float64 raw residual: 3.0428745555061912e+06
+Float64 relative residual: 4.5285083339882578e+04
+Float32 raw residual: 3.9009088948390908e+06
+Float32 relative residual: 5.8054639184654370e+04
+Float32 refined residual: 2.1790637603971384e-12
+Float16 raw residual: 3.6328647278509747e+11
+Float16 relative residual: 5.4065515670225763e+09
+Float16 refined residual: 7.4118525736482976e-01
+
+Float64 nnz: 10600317
+Float32 nnz: 10600317
+Float32 refined nnz: 10600317
+Float16 nnz: 4515
+Float16 refined nnz: 4515
+
+Float64 construction time: 6426.828220
+Float32 construction time: 5483.645050
+Float32 refinement time: 29.100093
+Float32 total time: 5512.745142
+Float16 construction time: 0.064697
+Float16 refinement time: 0.729753
+Float16 total time: 0.794450
+
+Float32 pattern valid: true
+Float16 pattern valid: true

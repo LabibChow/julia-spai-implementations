@@ -1,0 +1,9 @@
+tri100eigs4k precision + fixed-pattern refinement
+Dropping: none
+itmax: 300
+tol: 1.0e-15
+
+Method   Float64        Float32        F32 refined    Float16        F16 refined   
+PMR      6.418559e-01   6.418551e-01   3.241058e-02   6.417036e-01   1.070870e-01  
+PCG      3.815564e-10   1.049370e-01   9.211613e-11   3.509171e-01   2.938304e-04  
+LOPMR    2.176758e-10   3.236557e-02   9.113905e-11   7.100222e-02   7.326806e-03  

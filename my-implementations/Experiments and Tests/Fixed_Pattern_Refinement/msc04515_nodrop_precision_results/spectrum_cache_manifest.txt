@@ -1,0 +1,29 @@
+msc04515 no-dropping cached matrices
+itmax = 5000
+tol = 1.0e-15
+dropping = none
+
+Original matrix:
+msc04515_A_float64.jls
+
+PMR
+  Float64 M: pmr_float64_construction.jls
+  Float32 M: pmr_float32_construction.jls
+  Float32 refined M: pmr_float32_refined.jls
+  Float16 M: pmr_float16_construction.jls
+  Float16 refined M: pmr_float16_refined.jls
+
+PCG
+  Float64 M: pcg_float64_construction.jls
+  Float32 M: pcg_float32_construction.jls
+  Float32 refined M: pcg_float32_refined.jls
+  Float16 M: pcg_float16_construction.jls
+  Float16 refined M: pcg_float16_refined.jls
+
+LOPMR
+  Float64 M: lopmr_float64_construction.jls
+  Float32 M: lopmr_float32_construction.jls
+  Float32 refined M: lopmr_float32_refined.jls
+  Float16 M: lopmr_float16_construction.jls
+  Float16 refined M: lopmr_float16_refined.jls
+
