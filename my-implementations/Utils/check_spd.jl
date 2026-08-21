@@ -14,7 +14,6 @@ function check_spd(A::AbstractMatrix; name = "A", symmetry_tolerance = 1e-12)
         norm(A - A') / A_norm
 
     # 2. Eigenvalue check
-    # Since nos1 is only 237 × 237, we can afford to convert it to dense and compute eigenvalues.
 
     A_dense = Matrix{Float64}(A)
     A_symmetric = Symmetric(A_dense)
@@ -38,7 +37,7 @@ function check_spd(A::AbstractMatrix; name = "A", symmetry_tolerance = 1e-12)
     # 4. Final SPD classification
 
     # Float64-generated matrices can usually use 1e-12.
-    # Float32-generated matrices should use a looser tolerance, e.g. 1e-6
+    # Float32-generated matrices should use a looser tolerance, like 1e-6
 
     is_spd =
         symmetry_error < symmetry_tolerance &&
@@ -47,7 +46,6 @@ function check_spd(A::AbstractMatrix; name = "A", symmetry_tolerance = 1e-12)
 
     # 5. Results
 
-    println("--------------------------------------")
     println("SPD check for: ", name)
     println("Size: ", size(A))
     println("Symmetry error: ", symmetry_error)
@@ -55,7 +53,6 @@ function check_spd(A::AbstractMatrix; name = "A", symmetry_tolerance = 1e-12)
     println("Largest eigenvalue: ", lambda_max)
     println("Cholesky succeeded: ", cholesky_success)
     println("Classified as SPD: ", is_spd)
-    println("--------------------------------------")
 
     return (
         symmetry_error = symmetry_error,
