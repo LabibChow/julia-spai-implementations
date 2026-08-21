@@ -1,0 +1,388 @@
+using SparseArrays
+using LinearAlgebra
+using MatrixDepot
+using Plots
+using Printf
+import Measures
+
+# Include utility functions
+
+include(joinpath(@__DIR__, "..", "..", "Utils", "frobenius.jl"))
+
+
+include(joinpath(@__DIR__, "..", "..", "Utils", "dropping.jl"))
+
+
+spai_dir = joinpath(@__DIR__, "..", "..", "SPAI Iterations")
+
+include(joinpath(spai_dir, "my_pcg_spai.jl"))
+
+include(joinpath(spai_dir, "my_pcg_lowprec_spgemm.jl"))
+
+
+# Load bcsstk21
+
+md = mdopen("HB/bcsstk21")
+
+A = sparse(Float64.(md.A))
+
+n = size(A, 1)
+
+println("Matrix: bcsstk21")
+println("size(A) = $(size(A))")
+println("nnz(A) = $(nnz(A))")
+println("eltype(A) = $(eltype(A))")
+println("density(A) = $(nnz(A) / n^2)")
+
+
+# Initial approximate inverse and Jacobi preconditioner
+
+M0 = spdiagm(
+    0 => ones(Float64, n)
+)
+
+Pr = spdiagm(
+    0 => 1.0 ./ diag(A)
+)
+
+
+# Experiment settings
+
+itmax = 1000
+tol = 1.0e-15
+
+# Symmetric dropping:
+# each column initially selects at most this many entries.
+max_per_column = 100
+
+println("\nExperiment settings:")
+println("itmax = $itmax")
+println("tol = $tol")
+println("max_per_column = $max_per_column")
+
+
+# Warm-up runs
+
+# Trigger compilation before measured runs.
+
+println("\nCompiling full-precision PCG...")
+
+my_pcg(
+    A,
+    Pr,
+    copy(M0),
+    1,
+    tol;
+    max_per_column = max_per_column
+)
+
+println("\nCompiling low-precision-SpGEMM PCG...")
+
+my_pcg_lowprec_spgemm(
+    A,
+    Pr,
+    copy(M0),
+    1,
+    tol;
+    max_per_column = max_per_column
+)
+
+GC.gc()
+
+
+# Full Float64 PCG
+
+println("\n")
+println("FULL FLOAT64 PCG")
+
+full64_result = nothing
+
+full64_total_time = @elapsed begin
+
+    full64_result = my_pcg(
+        A,
+        Pr,
+        copy(M0),
+        itmax,
+        tol;
+        max_per_column = max_per_column
+    )
+
+end
+
+M_full64, R_full64 = full64_result
+
+
+# PCG with Float32 A*P and A*M
+
+GC.gc()
+
+println("\n")
+println("PCG WITH FLOAT32 SpGEMMs")
+
+lowprec_result = nothing
+
+lowprec_total_time = @elapsed begin
+
+    lowprec_result = my_pcg_lowprec_spgemm(
+        A,
+        Pr,
+        copy(M0),
+        itmax,
+        tol;
+        max_per_column = max_per_column
+    )
+
+end
+
+M_lowprec, R_lowprec, lowprec_timings = lowprec_result
+
+
+# Relative residual histories
+
+relative_R_full64 =
+    R_full64 ./ R_full64[1]
+
+relative_R_lowprec =
+    R_lowprec ./ R_lowprec[1]
+
+
+# Additional diagnostics
+
+# Symmetry errors. Should be zero since I used symmetry in dropping
+
+symmetry_error_full64 =
+    norm(M_full64 - transpose(M_full64)) /
+    max(norm(M_full64), eps(Float64))
+
+symmetry_error_lowprec =
+    norm(M_lowprec - transpose(M_lowprec)) /
+    max(norm(M_lowprec), eps(Float64))
+
+
+# Final Float64 residual sanity checks.
+
+
+I_sparse = spdiagm(
+    0 => ones(Float64, n)
+)
+
+true_residual_full64 =
+    norm(I_sparse - A * M_full64) /
+    norm(I_sparse)
+
+true_residual_lowprec =
+    norm(I_sparse - A * M_lowprec) /
+    norm(I_sparse)
+
+
+# Summary
+
+println("\n")
+println("EXPERIMENT SUMMARY")
+
+@printf(
+    "%-42s %15.6e\n",
+    "Full Float64 final recorded residual:",
+    R_full64[end]
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Low-precision final recorded residual:",
+    R_lowprec[end]
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Full Float64 true final residual:",
+    true_residual_full64
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Low-precision true final residual:",
+    true_residual_lowprec
+)
+
+@printf(
+    "%-42s %15d\n",
+    "Full Float64 iterations:",
+    length(R_full64) - 1
+)
+
+@printf(
+    "%-42s %15d\n",
+    "Low-precision SpGEMM iterations:",
+    length(R_lowprec) - 1
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Full Float64 total time:",
+    full64_total_time
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Low-precision total time:",
+    lowprec_total_time
+)
+
+@printf(
+    "%-42s %15.6f\n",
+    "Runtime ratio low precision / Float64:",
+    lowprec_total_time / full64_total_time
+)
+
+
+# Low-precision SpGEMM timing breakdown
+
+println("\n")
+println("LOW-PRECISION SpGEMM TIMING BREAKDOWN")
+
+@printf(
+    "%-42s %15.6f s\n",
+    "P -> Float32 conversion time:",
+    lowprec_timings.P_to_Float32
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Float32 A*P SpGEMM time:",
+    lowprec_timings.AP_Float32_SpGEMM
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "A*P -> Float64 conversion time:",
+    lowprec_timings.AP_to_Float64
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "M -> Float32 conversion time:",
+    lowprec_timings.M_to_Float32
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Float32 A*M SpGEMM time:",
+    lowprec_timings.AM_Float32_SpGEMM
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "A*M -> Float64 conversion time:",
+    lowprec_timings.AM_to_Float64
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Total conversion time:",
+    lowprec_timings.total_conversion
+)
+
+@printf(
+    "%-42s %15.6f s\n",
+    "Total Float32 SpGEMM time:",
+    lowprec_timings.total_lowprec_spgemm
+)
+
+
+# Sparsity and symmetry
+
+println("\n")
+println("SPARSITY AND SYMMETRY")
+
+@printf(
+    "%-42s %15d\n",
+    "nnz(M_full64):",
+    nnz(M_full64)
+)
+
+@printf(
+    "%-42s %15d\n",
+    "nnz(M_lowprec):",
+    nnz(M_lowprec)
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "nnz(M_full64)/n^2:",
+    nnz(M_full64) / n^2
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "nnz(M_lowprec)/n^2:",
+    nnz(M_lowprec) / n^2
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Full Float64 symmetry error:",
+    symmetry_error_full64
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Low-precision symmetry error:",
+    symmetry_error_lowprec
+)
+
+
+# Compare histories over common iteration range
+
+common_length = min(
+    length(relative_R_full64),
+    length(relative_R_lowprec)
+)
+
+maximum_history_difference = maximum(
+    abs.(
+        relative_R_full64[1:common_length] .-
+        relative_R_lowprec[1:common_length]
+    )
+)
+
+@printf(
+    "%-42s %15.6e\n",
+    "Maximum relative-history difference:",
+    maximum_history_difference
+)
+
+
+# Convergence plot
+
+plot(
+    0:length(relative_R_full64)-1,
+    relative_R_full64,
+    yscale = :log10,
+    linewidth = 2,
+    label = "PCG Float64",
+    xlabel = "Iteration",
+    ylabel = "Relative residual norm",
+    title = "bcsstk21: Float64 vs Float32 SpGEMMs",
+    legend = :topright,
+    grid = true,
+    margin = 5Measures.mm
+)
+
+plot!(
+    0:length(relative_R_lowprec)-1,
+    relative_R_lowprec,
+    linewidth = 2,
+    linestyle = :dash,
+    label = "PCG Float32 A*P and A*M"
+)
+
+output_path = joinpath(
+    @__DIR__,
+    "bcsstk21_pcg_lowprec_spgemm.png"
+)
+
+savefig(output_path)
+
+println("\nPlot saved to:")
+println(output_path)

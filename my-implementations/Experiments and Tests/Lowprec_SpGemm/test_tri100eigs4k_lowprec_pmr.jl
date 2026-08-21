@@ -102,7 +102,7 @@ GC.gc()
 
 println("\n")
 println("="^70)
-println("PMR WITH FLOAT32 A*M AND FLOAT32 (Pr*A)*Z")
+println("PMR WITH FLOAT32 A*P AND A*M")
 println("="^70)
 
 lowprec_result = nothing
@@ -195,20 +195,20 @@ println("\nTiming breakdown:")
 
 @printf(
     "%-46s %15.6f s\n",
-    "Z -> Float32 conversion time:",
-    timings.Z_to_Float32
+    "P -> Float32 conversion time:",
+    timings.P_to_Float32
 )
 
 @printf(
     "%-46s %15.6f s\n",
-    "Float32 (Pr*A)*Z SpGEMM time:",
-    timings.PrAZ_Float32_SpGEMM
+    "Float32 A*P SpGEMM time:",
+    timings.AP_Float32_SpGEMM
 )
 
 @printf(
     "%-46s %15.6f s\n",
-    "(Pr*A)*Z -> Float64 conversion time:",
-    timings.PrAZ_to_Float64
+    "A*P -> Float64 conversion time:",
+    timings.AP_to_Float64
 )
 
 @printf(
@@ -220,7 +220,7 @@ println("\nTiming breakdown:")
 @printf(
     "%-46s %15.6f s\n",
     "Total Float32 SpGEMM time:",
-    timings.total_Float32_SpGEMM
+    timings.total_lowprec_spgemm
 )
 
 @printf(
@@ -276,7 +276,7 @@ plot!(
     relative_R_lowprec,
     linewidth = 2,
     linestyle = :dash,
-    label = "PMR Float32 A*M and (Pr*A)*Z"
+    label = "PMR Float32 A*P and A*M"
 )
 
 output_path = joinpath(
