@@ -2,73 +2,166 @@ using SparseArrays
 using LinearAlgebra
 
 
-function my_pmr_float32(A, Pr, M, itmax, tol; max_per_column::Union{Nothing, Int} = nothing,)
-    A64 = Float64.(A)
+"""
+    my_pmr_float32(
+        A,
+        Pr,
+        M,
+        itmax,
+        tol;
+        max_per_column = nothing,
+    )
 
-    A32 = Float32.(A)
-    Pr32 = Float32.(Pr)
-    M32 = Float32.(M)
+Construct an SPAI using the PMR matrix iteration in Float32.
 
-    n = size(A32, 1)
+Precision distribution:
+- A, Pr, M, R, Z, PrA, PrAZ and recurrence arithmetic: Float32
+- The actual residual used for convergence measurement is recomputed
+  in Float64 as
 
-    R64 = spzeros(Float64, n, n)
+      R64 = I - A64 * Float64(M32)
 
-    R32 = spzeros(Float32, n, n)
-    Z = spzeros(Float32, n, n)
-    PrA = spzeros(Float32, n, n)
-    PrAZ = spzeros(Float32, n, n)
+If `max_per_column` is provided, symmetric dropping is applied
+immediately after each update of M and before recomputing the residual.
+"""
+function my_pmr_float32(
+    A,
+    Pr,
+    M,
+    itmax,
+    tol;
+    max_per_column::Union{Nothing, Int} = nothing,
+)
 
-    R_norm = zeros(Float64, itmax + 1)
+    n = size(A, 1)
+    # Precision setup
 
-    PrA .= Pr32 * A32
+    # Float64 A is used only for accurate residual measurement.
+    A64 = SparseMatrixCSC{Float64, Int}(A)
 
-    # Actual residual in Float64.
-    R64 .= I - A64 * Float64.(M32)
+    # Main PMR iteration is Float32.
+    A32 = SparseMatrixCSC{Float32, Int}(A)
+    Pr32 = SparseMatrixCSC{Float32, Int}(Pr)
+    M32 = SparseMatrixCSC{Float32, Int}(M)
 
-    R32 .= Float32.(R64)
-    Z .= Pr32 * R32
-    PrAZ .= PrA * Z
+    Id64 = spdiagm(
+        0 => ones(Float64, n)
+    )
+
+    R_norm = zeros(
+        Float64,
+        itmax + 1
+    )
+
+    # Pr*A in Float32
+
+    PrA = Pr32 * A32
+
+    # Initial actual residual in Float64
+
+    R64 = Id64 - A64 * Float64.(M32)
+
+
+    R32 = Float32.(R64)
+
+
+    # Initial PMR quantities
+
+    Z = Pr32 * R32
+
+    PrAZ = PrA * Z
 
     i = 0
-    R_norm[i + 1] = frob_norm(R64)
+
+    R_norm[1] = frob_norm(R64)
+
+    println(
+        "my_pmr_float32 it = 0, ",
+        "err = $(R_norm[1]), ",
+        "nnz(M)/n^2 = $(nnz(M32) / n^2)"
+    )
+
+
+    # PMR iteration
 
     while i < itmax
-        denominator = frob_norm_squared(PrAZ)
 
-        if denominator == 0
-            @warn "PMR stopped because the alpha denominator is zero."
+        # Compute alpha
+
+        denominator =
+            frob_norm_squared(PrAZ)
+
+        if denominator == 0 || !isfinite(denominator)
+    @warn "PMR stopped because the alpha denominator is invalid."
+    break
+end
+
+
+        numerator =
+            frob_inner_prod(
+                Z,
+                PrAZ
+            )
+
+
+        alpha =
+            Float32(
+                numerator /
+                denominator
+            )
+
+
+        if !isfinite(alpha)
+
+            @warn(
+                "PMR stopped because alpha is not finite."
+            )
+
             break
         end
 
-        alpha = Float32(
-            frob_inner_prod(Z, PrAZ) / denominator
-        )
+        # Update M in Float32
 
-        # Update the approximate inverse.
-        M32 .+= alpha .* Z
+        M32 =
+            M32 +
+            alpha .* Z
 
-        # Restrict the sparsity immediately after the update.
+
+        # Optional symmetric dropping
+
         if max_per_column !== nothing
-            M32 = drop_largest_per_column(
-                M32,
-                max_per_column;
-                keep_diagonal = true,
-            )
+            M32 =
+                drop_largest_per_column(
+                    M32,
+                    max_per_column;
+                    keep_diagonal = true,
+                )
+
         end
 
-        # Recompute the actual residual after dropping.
-        R64 .= I - A64 * Float64.(M32)
 
-        R32 .= Float32.(R64)
-        Z .= Pr32 * R32
-        PrAZ .= PrA * Z
+        # True residual corresponding to the dropped M, evaluated in Float64 for convergence measurement.
+
+        R64 = Id64 - A64 * Float64.(M32)
+
+        # Back to Float32 for the PMR recurrence
+
+        R32 = Float32.(R64)
+
+        Z = Pr32 * R32
+
+        PrAZ = PrA * Z
+
+
+        # Residual norm
 
         i += 1
+
         R_norm[i + 1] = frob_norm(R64)
 
         println(
-            "my_pmr_float32 it = $i, " *
-            "err = $(R_norm[i + 1]), " *
+            "my_pmr_float32 it = $i, ",
+            "err = $(R_norm[i + 1]), ",
             "nnz(M)/n^2 = $(nnz(M32) / n^2)"
         )
 
