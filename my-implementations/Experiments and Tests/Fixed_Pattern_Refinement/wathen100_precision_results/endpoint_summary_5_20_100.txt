@@ -1,0 +1,21 @@
+Matrix: wathen100
+SuiteSparse name: GHS_psdef/wathen100
+Dropping: max_per_column = 900
+Endpoints: 5, 20, 100 iterations
+Refinement: Float64 fixed-pattern refinement performed separately after each endpoint
+
+Method   Iter   F64 relres     F32 relres     F32 refined    F16 relres     F16 refined    F64 nnz      F32 nnz      F32 ref nnz  F16 nnz      F16 ref nnz 
+PMR      5      9.063227e+00   9.098418e+00   1.087547e-03   8.908938e+00   2.580273e-02   9229441      9044993      9044993      2455553      2455553     
+PCG      5      9.473230e+00   9.417700e+00   1.159123e-03   9.488942e+00   3.520336e-02   9229441      8970475      8970475      3108159      3108159     
+LOPMR    5      5.276612e+00   5.267791e+00   1.087108e-03   5.012455e+00   3.165729e-02   9229441      9114873      9114873      3173069      3173069     
+
+PMR      20     6.522658e-02   4.348840e-02   7.928432e-04   4.746560e-01   1.345212e-01   25412445     25161403     25161402     973561       973561      
+PCG      20     2.316155e-01   2.264800e-01   1.267831e-03   5.174992e-01   1.445077e-01   25801135     25004519     25004519     1046797      1046777     
+LOPMR    20     4.558956e-03   4.495052e-03   1.190298e-04   2.934472e-01   1.647871e-01   25471063     22586613     22586102     715395       715395      
+
+PMR      100    4.003018e-07   7.159025e-05   4.361296e-05   2.750197e-01   1.759081e-01   25968037     10895241     10895241     677171       677171      
+PCG      100    1.092103e-06   1.217631e-04   5.841307e-05   3.172780e-01   1.842889e-01   25992031     10577537     10577532     698941       698941      
+LOPMR    100    2.169980e-07   5.553949e-05   3.373280e-05   2.724217e-01   1.737784e-01   25946697     11393353     11393353     649673       649673      
+
+
+NOTE: refinement is performed only when the corresponding low-precision construction reaches the requested endpoint exactly.

@@ -1,0 +1,21 @@
+tri100eigs4k fully reduced precision + Float64 fixed-pattern refinement
+Dropping: none
+itmax: 300
+tol: 1.0e-15
+
+Method   Float64        Full F32       F32 refined    Full F16       F16 refined   
+PMR      6.418559e-01   6.418551e-01   3.241058e-02   6.826456e-01   4.142488e-02  
+PCG      3.815564e-10   5.208590e-01   1.106278e-10   3.211267e-01   3.164070e-04  
+LOPMR    2.176758e-10   3.253302e-02   1.132376e-10   3.656808e-01   2.891795e-01  
+
+Iterations
+Method   Float64      Full F32     Full F16    
+PMR      300          300          300         
+PCG      300          300          125         
+LOPMR    300          300          1           
+
+Timings
+Method   F64          F32          F32 ref      F32 total    F16          F16 ref      F16 total   
+PMR      15.1958      1.9672       0.7646       2.7317       1.6654       0.1432       1.8086      
+PCG      39.1561      29.8047      1.5003       31.3050      3.3848       0.3021       3.6868      
+LOPMR    57.1606      42.0921      0.8379       42.9300      0.0046       0.1062       0.1108      

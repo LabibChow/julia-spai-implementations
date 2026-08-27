@@ -1,0 +1,14 @@
+msc04515 fully reduced Float32 + Float64 fixed-pattern refinement
+dropping: none
+itmax: 5000
+tol: 1.0e-15
+
+Method   Float64        Full F32       F32 refined    F64 it     F32 it    
+PMR      4.528508e+04   6.345737e+04   2.179064e-12   5000       5000      
+PCG      3.436211e-08   2.907332e+01   2.179064e-12   5000       5000      
+LOPMR    2.794010e-07   2.781261e+03   2.179064e-12   5000       5000      
+
+Method   F64          F32          F32 ref      F32 total   
+PMR      6306.5133    4690.2958    27.5704      4717.8662   
+PCG      5884.7111    5305.2178    40.8844      5346.1023   
+LOPMR    9077.6441    8160.3845    25.6120      8185.9965   

@@ -1,0 +1,34 @@
+Matrix: 4bw100eigs20k
+Method: LOPMR
+itmax: 100
+max_per_column: 100
+
+Float64 iterations: 100
+Float32 iterations: 100
+Float16 iterations: 0
+
+Float64 raw residual: 1.5775100227124992e+00
+Float64 relative residual: 1.1154680344497528e-02
+Float32 raw residual: 1.6015143367576368e+00
+Float32 relative residual: 1.1324416476888010e-02
+Float32 refined residual: 5.5040645081652617e-04
+Float16 raw residual: 1.0256562552098092e+01
+Float16 relative residual: 7.2524849322525634e-02
+Float16 refined residual: SKIPPED — requested endpoint not reached
+
+Float64 nnz: 1842734
+Float32 nnz: 630520
+Float32 refined nnz: 630520
+Float16 nnz: 20000
+Float16 refined nnz: SKIPPED
+
+Float64 construction time: 41.546762
+Float32 construction time: 17.566881
+Float32 refinement time: 0.913006
+Float32 total time: 18.479887
+Float16 construction time: 0.031188
+Float16 refinement time: SKIPPED
+Float16 total time: N/A
+
+Float32 pattern valid: true
+Float16 pattern valid: SKIPPED — endpoint not reached (0/100 iterations)

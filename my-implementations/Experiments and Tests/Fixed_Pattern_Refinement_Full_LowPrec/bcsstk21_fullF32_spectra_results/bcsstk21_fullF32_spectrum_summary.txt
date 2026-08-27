@@ -1,0 +1,13 @@
+Method   Version                 Pos      Neg     Zero       lambda_min       lambda_max
+PMR      Float64                3578       22        0    -1.138583e-02     9.185674e-01
+PCG      Float64                3600        0        0     7.854594e-09     1.386165e-01
+LOPMR    Float64                3600        0        0     7.854594e-09     1.386165e-01
+PMR      Full F32               3565       35        0    -1.542369e-02     9.502551e-01
+PCG      Full F32               3600        0        0     7.856952e-09     1.389396e-01
+LOPMR    Full F32               3600        0        0     7.854593e-09     1.473950e-01
+PMR      F32 refined            3600        0        0     7.854594e-09     1.386165e-01
+PCG      F32 refined            3600        0        0     7.854594e-09     1.386165e-01
+LOPMR    F32 refined            3600        0        0     7.854594e-09     1.386165e-01
+
+A^-1 min: 7.8545942157934616e-09
+A^-1 max: 1.3861652431638632e-01

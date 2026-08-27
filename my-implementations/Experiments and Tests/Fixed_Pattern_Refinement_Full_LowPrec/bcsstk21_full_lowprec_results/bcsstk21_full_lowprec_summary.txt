@@ -1,0 +1,9 @@
+bcsstk21 fully reduced precision + Float64 fixed-pattern refinement
+Dropping: none
+itmax: 1000
+tol: 1.0e-15
+
+Method   Float64        Full F32       F32 refined    Full F16       F16 refined   
+PMR      2.986062e+01   2.073426e+02   5.151500e-14   4.931604e+07   5.945356e-01  
+PCG      8.453146e-12   2.419988e-03   5.151500e-14   4.931606e+07   6.254670e-01  
+LOPMR    2.072904e-12   1.245448e-03   5.151500e-14   4.931606e+07   6.254670e-01  

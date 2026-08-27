@@ -1,0 +1,34 @@
+Matrix: wathen100
+Method: LOPMR
+itmax: 100
+max_per_column: 900
+
+Float64 iterations: 100
+Float32 iterations: 100
+Float16 iterations: 100
+
+Float64 raw residual: 3.7835523279301095e-05
+Float64 relative residual: 2.1699803947008804e-07
+Float32 raw residual: 9.6837998716936321e-03
+Float32 relative residual: 5.5539487884599045e-05
+Float32 refined residual: 3.3732799910220522e-05
+Float16 raw residual: 4.7499124465942593e+01
+Float16 relative residual: 2.7242168185616361e-01
+Float16 refined residual: 1.7377838438759316e-01
+
+Float64 nnz: 25946697
+Float32 nnz: 11393353
+Float32 refined nnz: 11393353
+Float16 nnz: 649673
+Float16 refined nnz: 649673
+
+Float64 construction time: 1050.355141
+Float32 construction time: 707.400935
+Float32 refinement time: 207.298201
+Float32 total time: 914.699136
+Float16 construction time: 88.173771
+Float16 refinement time: 1.417252
+Float16 total time: 89.591022
+
+Float32 pattern valid: true
+Float16 pattern valid: true

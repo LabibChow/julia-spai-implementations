@@ -1,0 +1,20 @@
+Matrix: 4bw100eigs20k
+Dropping: max_per_column = 100
+Endpoints: 5, 20, 100 iterations
+Refinement: Float64 fixed-pattern refinement performed separately after each endpoint
+
+Method   Iter   F64 relres     F32 relres     F32 refined    F16 relres     F64 nnz      F32 nnz      F32 ref nnz 
+PMR      5      6.969807e-02   6.969800e-02   1.248899e-02   7.252485e-02   650478       338190       338190      
+PCG      5      1.858768e-01   1.858788e-01   1.023292e-02   7.252485e-02   819526       518016       518016      
+LOPMR    5      3.227453e-02   3.227459e-02   1.023312e-02   7.252485e-02   819252       478740       478740      
+
+PMR      20     6.969206e-02   6.969198e-02   1.250755e-02   7.252485e-02   650534       338188       338188      
+PCG      20     1.642489e-01   1.642495e-01   1.631008e-04   7.252485e-02   1393804      627832       627832      
+LOPMR    20     2.328632e-02   2.328624e-02   1.192706e-04   7.252485e-02   1311954      546256       546256      
+
+PMR      100    6.969206e-02   6.969198e-02   1.250755e-02   7.252485e-02   650534       338188       338188      
+PCG      100    4.006355e-01   3.257789e-01   3.626261e-03   7.252485e-02   1986224      1028932      1028932     
+LOPMR    100    1.115468e-02   1.132442e-02   5.504065e-04   7.252485e-02   1842734      630520       630520      
+
+
+NOTE: low-precision refinement is performed only when the requested endpoint is reached exactly.

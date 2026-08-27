@@ -1,0 +1,34 @@
+Matrix: 4bw100eigs20k
+Method: PCG
+itmax: 5
+max_per_column: 100
+
+Float64 iterations: 5
+Float32 iterations: 5
+Float16 iterations: 0
+
+Float64 raw residual: 2.6286945435168313e+01
+Float64 relative residual: 1.8587677373888273e-01
+Float32 raw residual: 2.6287229264858375e+01
+Float32 relative residual: 1.8587878071786820e-01
+Float32 refined residual: 1.0232924595064100e-02
+Float16 raw residual: 1.0256562552098092e+01
+Float16 relative residual: 7.2524849322525634e-02
+Float16 refined residual: SKIPPED — requested endpoint not reached
+
+Float64 nnz: 819526
+Float32 nnz: 518016
+Float32 refined nnz: 518016
+Float16 nnz: 20000
+Float16 refined nnz: SKIPPED
+
+Float64 construction time: 1.115716
+Float32 construction time: 0.780777
+Float32 refinement time: 1.143715
+Float32 total time: 1.924492
+Float16 construction time: 0.023545
+Float16 refinement time: SKIPPED
+Float16 total time: N/A
+
+Float32 pattern valid: true
+Float16 pattern valid: SKIPPED — endpoint not reached (0/5 iterations)

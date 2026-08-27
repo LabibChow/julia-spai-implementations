@@ -1,0 +1,34 @@
+Matrix: wathen100
+Method: PCG
+itmax: 5
+max_per_column: 900
+
+Float64 iterations: 5
+Float32 iterations: 5
+Float16 iterations: 5
+
+Float64 raw residual: 1.6517412909901377e+03
+Float64 relative residual: 9.4732302024943209e+00
+Float32 raw residual: 1.6420591147485050e+03
+Float32 relative residual: 9.4177000266136126e+00
+Float32 refined residual: 1.1591231080678231e-03
+Float16 raw residual: 1.6544807581277914e+03
+Float16 relative residual: 9.4889418656759101e+00
+Float16 refined residual: 3.5203359145589246e-02
+
+Float64 nnz: 9229441
+Float32 nnz: 8970475
+Float32 refined nnz: 8970475
+Float16 nnz: 3108159
+Float16 refined nnz: 3108159
+
+Float64 construction time: 6.448166
+Float32 construction time: 5.834350
+Float32 refinement time: 102.702772
+Float32 total time: 108.537122
+Float16 construction time: 4.840494
+Float16 refinement time: 15.399311
+Float16 total time: 20.239806
+
+Float32 pattern valid: true
+Float16 pattern valid: true

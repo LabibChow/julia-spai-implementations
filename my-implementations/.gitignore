@@ -1,2 +1,5 @@
 # Large serialized SPAI checkpoints
 Experiments and Tests/Fixed_Pattern_Refinement/*_checkpoints/
+*_checkpoints/
+*_matrices/
+*.jls

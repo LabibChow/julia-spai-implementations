@@ -20,13 +20,13 @@ Float32 refined nnz: 6480000
 Float16 nnz: 3600
 Float16 refined nnz: 3600
 
-Float64 construction time: 645.647676
-Float32 construction time: 541.617747
-Float32 refinement time: 9.855722
-Float32 total time: 551.473469
-Float16 construction time: 0.061374
-Float16 refinement time: 0.612792
-Float16 total time: 0.674166
+Float64 construction time: 697.583198
+Float32 construction time: 587.677092
+Float32 refinement time: 10.509358
+Float32 total time: 598.186450
+Float16 construction time: 0.066951
+Float16 refinement time: 0.653336
+Float16 total time: 0.720287
 
 Float32 pattern valid: true
 Float16 pattern valid: true
